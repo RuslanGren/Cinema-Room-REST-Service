@@ -13,6 +13,8 @@ public class Cinema {
     private final List<Ticket> purchasedTickets = new ArrayList<>();
     private int total_rows;
     private int total_columns;
+    @JsonIgnore
+    private Statistics statistics;
 
     public Cinema(int total_rows, int total_columns) {
         this.total_rows = total_rows;
@@ -23,6 +25,17 @@ public class Cinema {
                 availableSeats.add(new Seat(row, column));
             }
         }
+
+        statistics = new Statistics(total_columns * total_rows);
+
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 
     public List<Seat> getAvailableSeats() {
@@ -36,11 +49,13 @@ public class Cinema {
     public void purchaseTicket(Ticket ticket) {
         purchasedTickets.add(ticket);
         ticket.getSeat().setPurchased(true);
+        statistics.purchaseTicket(ticket.getSeat().getPrice());
     }
 
     public void returnTicket(Ticket ticket) {
         purchasedTickets.remove(ticket);
         ticket.getSeat().setPurchased(false);
+        statistics.returnTicket(ticket.getSeat().getPrice());
     }
 
     public int getTotal_rows() {

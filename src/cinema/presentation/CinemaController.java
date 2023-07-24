@@ -18,6 +18,14 @@ public class CinemaController {
         return cinema;
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStats(@RequestParam(value = "password", required = false) String password) {
+        if (password == null || !password.equals("super_secret")) {
+            return new ResponseEntity<>(new WrongPasswordException(), HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(cinema.getStatistics(), HttpStatus.OK);
+    }
+
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseTicket(@RequestBody Seat inputSeat) {
         for (Seat seat : cinema.getAvailableSeats()) {
